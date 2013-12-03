@@ -1,0 +1,5 @@
+Commands
+
+Set-Location Documents\code\vbs\repos\useful_funcs
+Get-ChildItem
+

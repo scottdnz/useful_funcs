@@ -133,14 +133,29 @@ Sub testGetNiceShortDateZeros()
 End Sub
 
 Sub testGetDtForFName()
+  Dim dtForName
+  Dim dtObj
   dtObj = CDate("2013-11-27 16:40:32") 'gives a datetime
   dtForName = getDtForFName(dtObj)
   AssertEqual dtForName, "20131127_164032", "testGetDtForFName"
 End Sub
 
 Sub testGetDtObjFromStrg()
-  'Placeholder
-  'getDtObjFromStrg
+  Dim dtStrg
+  Dim dtObj
+  dtStrg = "04/12/2013"
+  dtObj = getDtObjFromStrg(dtStrg)
+  AssertEqual TypeName(dtObj), "Date", "testGetDtObjFromStrg"
+End Sub
+
+Sub testGetDtObjFromStrgValues()
+  Dim dtStrg
+  Dim dtObj
+  dtStrg = "04/12/2013"
+  dtObj = getDtObjFromStrg(dtStrg)
+  AssertEqual Day(dtObj), 4, "testGetDtObjFromStrgValues"
+  AssertEqual Month(dtObj), 12, "testGetDtObjFromStrgValues"
+  AssertEqual Year(dtObj), 2013, "testGetDtObjFromStrgValues"
 End Sub
 
 Sub testGet7WDFuture()
@@ -153,6 +168,7 @@ Sub testWriteCSV()
   'writeCSV(dtsArr)
 End Sub
 
+'wscript.echo
 
 'Execute tests ################################################################
 cntr = 0
@@ -160,11 +176,14 @@ testProcs = Array("testAddLeadingZeroPositive()", _
                   "testAddLeadingZeroNegative()", _
                   "testGetNiceShortDatePlain()", _
                   "testGetNiceShortDateZeros()", _                  
-                  "testGetDtForFName()" _
+                  "testGetDtForFName()", _
+                  "testGetDtObjFromStrg()", _
+                  "testGetDtObjFromStrgValues()" _
                   )
                   
 For each testProc in testProcs
   Execute testProc
+  wscript.echo "."
   cntr = cntr + 1
 Next
 wscript.echo cntr & " tests succesfully passed."
