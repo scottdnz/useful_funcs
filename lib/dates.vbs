@@ -63,10 +63,10 @@ Function get7WDFuture(specDate)
   get7WDFuture = getNiceShortDate(lowest)
 End Function
 
-'Takes an array of dates information and writes it to a CSV file.
-Sub writeCSV(dtsArr)
+'Takes a 2-d array of dates information and writes it to a CSV file.
+Function writeCSV(dtsArr)
   Set objFSO = CreateObject("Scripting.FileSystemObject")
-  outFile = ".\output_" & getDtForFName & ".csv"
+  outFile = ".\output_" & getDtForFName(Now) & ".csv"
   Set objFile = objFSO.CreateTextFile(outFile, True)
   'Write the Header row
   objFile.WriteLine("Current date,7 WD Future") 
@@ -78,8 +78,9 @@ Sub writeCSV(dtsArr)
   next
   
   objFile.Close
-  wscript.echo "File " & outFile & " written."
-End Sub
+  'wscript.echo "File " & outFile & " written."
+  writeCSV = outFile
+End Function
 
 Sub AssertEqual(given, expected, procName)
   if not given = expected then
@@ -159,16 +160,39 @@ Sub testGetDtObjFromStrgValues()
 End Sub
 
 Sub testGet7WDFuture()
-  'Placeholder
-  'get7WDFuture
+  dtObj = DateSerial(2013, 12, 4)
+  expectedDt = DateSerial(2013, 12, 13)
+  wD7FutureDt = get7WDFuture(dtObj)
+  AssertEqual Year(wD7FutureDt), Year(expectedDt), "testGet7WDFuture"
+  AssertEqual Month(wD7FutureDt), Month(expectedDt), "testGet7WDFuture"
+  AssertEqual Day(wD7FutureDt), Day(expectedDt), "testGet7WDFuture"
 End Sub
 
 Sub testWriteCSV()
-  'Placeholder
-  'writeCSV(dtsArr)
+  Dim dtsArray(1,1)
+  Dim cntr
+  dtsArray(0,0) = "05/12/2013"
+  dtsArray(0,1) = "17/12/2013"
+  dtsArray(1,0) = "06/12/2013"
+  dtsArray(1,1) = "18/12/2013"
+  outFile = writeCSV(dtsArray)
+  'Read the CSV file that was written & check it
+  Set inCsvObj = CreateObject("Scripting.FileSystemObject") 
+  Set inCsv = inCsvObj.OpenTextFile(outFile, "1", True)
+  cntr = 0
+  inCsv.ReadLine    'Read & ignore the header line
+  Do While Not inCsv.AtEndOfStream
+    curLine = inCsv.ReadLine
+    rowItems = Split(curLine, ",")   
+    AssertEqual rowItems(0), dtsArray(cntr, 0), "testWriteCSV"
+    AssertEqual rowItems(1), dtsArray(cntr, 1), "testWriteCSV"
+    cntr = cntr + 1
+  Loop
+  inCsv.Close
+  'Clean up
+  Set obj = CreateObject("Scripting.FileSystemObject") 'Calls the File System Object  
+  obj.DeleteFile(outFile) 
 End Sub
-
-'wscript.echo
 
 'Execute tests ################################################################
 cntr = 0
@@ -178,7 +202,9 @@ testProcs = Array("testAddLeadingZeroPositive()", _
                   "testGetNiceShortDateZeros()", _                  
                   "testGetDtForFName()", _
                   "testGetDtObjFromStrg()", _
-                  "testGetDtObjFromStrgValues()" _
+                  "testGetDtObjFromStrgValues()", _
+                  "testGet7WDFuture()", _
+                  "testWriteCSV()" _
                   )
                   
 For each testProc in testProcs

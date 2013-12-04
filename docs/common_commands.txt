@@ -1,5 +1,11 @@
 Commands
 
+Git bash:
+cd Documents/code/vbs/repos/useful_funcs
+git commit -a -m "Message here"
+git push
+
+Powershell:
 Set-Location Documents\code\vbs\repos\useful_funcs
 Get-ChildItem
-
+Remove-Item .\output_*
