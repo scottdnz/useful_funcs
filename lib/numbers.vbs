@@ -5,10 +5,11 @@ Sub includeFile(fSpec)
   executeGlobal CreateObject("Scripting.FileSystemObject").openTextFile(fSpec).readAll()
 End Sub
 
-includeFile "common_testing.vbs"
+'includeFile "common_testing.vbs"
 
-
-Function IsNumber(val)
+'Performs a check on a variable/object to determine whether it can be converted
+'to a number. Returns a bool.
+Function isNumber(val)
   valid = True
   If IsNull(val) or IsEmpty(val) then
     'or (val Is Nothing)
@@ -19,64 +20,18 @@ Function IsNumber(val)
       valid = False
     End If
   End If
-  IsNumber = valid
+  isNumber = valid
 End Function
 
-
-'Test functions ###############################################################
-Sub testIsNumberGood()
-  goodVals = Array(123, _
-    123.5, _
-    "123", _
-    "123.50", _
-    "$123", _
-    "$123.50" _
-    )
-  for each val in goodVals
-    AssertEqual True, IsNumeric(val), "testIsNumberGood"
+'Filters a string so that it only contains permitted characters that represent
+'a valid number. Returns a string.
+Function getFilteredDblStrg(strgVal)
+  allowedChars = Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-")
+  cleanStrg = ""
+  for i = 1 to len(strgVal)
+    if inArray(Mid(strgVal, i, 1), allowedChars) Then
+      cleanStrg = cleanStrg & Mid(strgVal, i, 1)
+    end if
   next
-End Sub
-
-Sub testIsNumberBad()
-  Dim emptyVal
-  badVals = Array("abc", _
-    "123a", _
-    DateSerial(2013, 12, 5), _
-    "", _
-    Null _
-    )
-  for each val in badVals
-    AssertNotEqual True, IsNumeric(val), "testIsNumberBad"
-  next
-  AssertNotEqual True, IsNumber(emptyVal), "testIsNumberBad"
-  'wscript.echo IsNumeric(emptyVal)
-End Sub
-
-Sub testIsNumberGood()
-  goodVals = Array(123, _
-    123.5, _
-    "123", _
-    "123.50", _
-    "$123", _
-    "$123.50" _
-    )
-  for each val in goodVals
-    AssertEqual True, IsNumeric(val), "testIsNumberGood"
-  next
-End Sub
-
-'Execute tests ################################################################
-
-testProcs = Array("testIsNumberBad()", _
-  "testIsNumberGood()" _
-  )
-runReportTests(testProcs)
-
-Dim emptyVal
-'val = emptyVal
-
-If IsNull(emptyVal) or IsEmpty(emptyVal) then
-  wscript.echo "not"
-end if
-
-'wscript.echo CDbl("$1.50")
+  getFilteredDblStrg = cleanStrg
+End Function

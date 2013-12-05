@@ -27,3 +27,16 @@ Sub runReportTests(testProcs)
   Next
   wscript.echo cntr & " tests successfully passed."
 End Sub
+
+Function inArray(val, arr)
+  Dim i
+  Dim found
+  found = False
+  for i = 0 to Ubound(arr)
+    If arr(i) = val Then
+      found = True
+      exit for
+    End If
+  next
+  inArray = found
+End Function
