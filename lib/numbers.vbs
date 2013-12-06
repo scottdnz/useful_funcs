@@ -11,15 +11,10 @@ End Sub
 'to a number. Returns a bool.
 Function isNumber(val)
   valid = True
-  If IsNull(val) or IsEmpty(val) then
+  If IsNull(val) or IsEmpty(val) or Not IsNumeric(val) then
     'or (val Is Nothing)
     valid = False
   end if
-  If valid Then
-    If Not IsNumeric(val) Then
-      valid = False
-    End If
-  End If
   isNumber = valid
 End Function
 
@@ -34,4 +29,9 @@ Function getFilteredDblStrg(strgVal)
     end if
   next
   getFilteredDblStrg = cleanStrg
+End Function
+
+Function convMoneyDisplay(strgVal)
+  dblVal = FormatNumber(CDbl(strgVal), 2)
+  convMoneyDisplay = dblVal
 End Function
