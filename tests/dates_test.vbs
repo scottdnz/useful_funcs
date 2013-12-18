@@ -108,6 +108,49 @@ Sub testWriteCSV()
   obj.DeleteFile(outFile) 
 End Sub
 
+Sub testRemoveDaySuffix()
+  Dim dtsArray(3,1)
+  dtsArray(0,0) = "1st"
+  dtsArray(0,1) = "1"
+  dtsArray(1,0) = "2nd"
+  dtsArray(1,1) = "2"
+  dtsArray(2,0) = "3rd"
+  dtsArray(2,1) = "3"
+  dtsArray(3,0) = "4th"
+  dtsArray(3,1) = "4"
+  for i = 0 to Ubound(dtsArray)
+    dayWSuffix = dtsArray(i, 0)
+    expectedDayWithoutSfx = dtsArray(i, 1)
+    dayWithoutSfx = removeDaySuffix(dayWSuffix)
+    'Wscript.echo dayWithoutSfx & ", " & expectedDayWithoutSfx
+    AssertEqual dayWithoutSfx, expectedDayWithoutSfx, "testRemoveDaySuffix"
+  next
+End Sub
+
+Sub testConvMonthNameDateToFmtStrg()
+  Dim dtsArray(3,2)
+  dtsArray(0,0) = "1st"
+  dtsArray(0,1) = "February 2014"
+  dtsArray(0,2) = "01/02/2014"
+  dtsArray(1,0) = "22nd"
+  dtsArray(1,1) = "March 2013"
+  dtsArray(1,2) = "22/03/2013"
+  dtsArray(2,0) = "13th"
+  dtsArray(2,1) = "December 2013"
+  dtsArray(2,2) = "13/12/2013"
+  dtsArray(3,0) = "23rd"
+  dtsArray(3,1) = "July 2014"
+  dtsArray(3,2) = "23/07/2014"
+  for i = 0 to Ubound(dtsArray)
+    dayWSuffix = dtsArray(i, 0)
+    monthNameYear = dtsArray(i, 1)
+    expectedDtFmtStrg = dtsArray(i, 2)
+    dtFmtStrg = convMonthNameDateToFmtStrg(dayWSuffix, monthNameYear)
+    'Wscript.echo dayWSuffix & ", " & monthNameYear & ", " & dtFmtStrg
+    AssertEqual dtFmtStrg, expectedDtFmtStrg, "testConvMonthNameDateToFmtStrg"
+  next
+End Sub
+
 'Execute tests ################################################################
 
 testProcs = Array("testAddLeadingZeroPositive()", _
@@ -118,6 +161,8 @@ testProcs = Array("testAddLeadingZeroPositive()", _
                   "testGetDtObjFromStrg()", _
                   "testGetDtObjFromStrgValues()", _
                   "testGet7WDFuture()", _
-                  "testWriteCSV()" _
+                  "testWriteCSV()", _
+                  "testRemoveDaySuffix()", _
+                  "testConvMonthNameDateToFmtStrg()" _
                   )
 runReportTests(testProcs)

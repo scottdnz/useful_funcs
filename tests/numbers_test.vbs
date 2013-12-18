@@ -127,7 +127,7 @@ Sub testConvMoneyDisplay()
 
   for i = 0 to Ubound(numVals)
     moneyVal = convMoneyDisplay(numVals(i, 0))
-    wscript.echo numVals(i, 0) & ", " & numVals(i, 1) & ", " & moneyVal
+    'wscript.echo numVals(i, 0) & ", " & numVals(i, 1) & ", " & moneyVal
     AssertEqual moneyVal, numVals(i, 1), "testConvMoneyDisplay"
   next
 End Sub

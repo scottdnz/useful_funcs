@@ -63,6 +63,26 @@ Function get7WDFuture(specDate)
   get7WDFuture = getNiceShortDate(lowest)
 End Function
 
+Function removeDaySuffix(dayWSuffix)
+  'Strip the suffix from dayWSuffix
+  suffixes = Array("st", "th", "nd", "rd")
+  for each sfx in suffixes
+    dayWSuffix = Replace(dayWSuffix, sfx, "")
+  next
+  removeDaySuffix = dayWSuffix
+End Function
+
+'Converts two string parameters, e.g. "15th" & "February 2014" to a date string
+'in the format dd/mm/yyyy
+Function convMonthNameDateToFmtStrg(dayWSuffix, monthNameYear)
+  dayWithoutSfx = removeDaySuffix(dayWSuffix)
+  dayWithoutSfx = addLeadingZero(dayWithoutSfx)
+  monthNum = Month(monthNameYear)
+  monthNum = addLeadingZero(monthNum)
+  yearNum = Year(monthNameYear)
+  convMonthNameDateToFmtStrg = dayWithoutSfx & "/" & monthNum & "/" & yearNum
+End Function
+
 'Takes a 2-d array of dates information and writes it to a CSV file.
 Function writeCSV(dtsArr)
   Set objFSO = CreateObject("Scripting.FileSystemObject")
@@ -81,3 +101,6 @@ Function writeCSV(dtsArr)
   'wscript.echo "File " & outFile & " written."
   writeCSV = outFile
 End Function
+
+'monthsArr = Array("January", "February", "March", "April", "May", "June", _
+'"July", "August", "September", "October", "November", "December")
