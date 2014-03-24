@@ -104,3 +104,24 @@ End Function
 
 'monthsArr = Array("January", "February", "March", "April", "May", "June", _
 '"July", "August", "September", "October", "November", "December")
+
+'Example
+'Set re = New RegExp
+'re.Global = True
+''D.O.B must match the date pattern d/m/yyyy or dd/mm/yyyy
+'re.Pattern = "^\d{1,2}/\d{1,2}/\d{4}$"
+'dobStrg = Replace(GetDataFromMatrix("2", 1, 1), " ", "")
+'set numMatches = re.Execute(dobStrg)  
+'cntr = 0
+'For Each match In numMatches
+'  cntr = cntr + 1
+'Next
+'if cntr <> 1 Then
+'  popmsgbox "'" & dobStrg & "' does not fit the pattern dd/mm/yyyy"
+'  exit sub
+'end if
+
+'If not IsDate(dobStrg) Then
+'  popmsgbox "'" & dobStrg & "' is not a valid date"
+'  exit sub
+'End If
