@@ -50,9 +50,9 @@ End Sub
 Sub testGetDtForFName()
   Dim dtForName
   Dim dtObj
-  dtObj = CDate("2013-11-27 16:40:32") 'gives a datetime
+  dtObj = CDate("2014-11-27 16:40:32") 'gives a datetime
   dtForName = getDtForFName(dtObj)
-  AssertEqual dtForName, "20131127_164032", "testGetDtForFName"
+  AssertEqual dtForName, "20141127_164032", "testGetDtForFName"
 End Sub
 
 Sub testGetDtObjFromStrg()
@@ -151,6 +151,40 @@ Sub testConvMonthNameDateToFmtStrg()
   next
 End Sub
 
+Sub testIsValidDatePositives()
+  Dim dtStrgArr
+  Dim dt
+  dtStrgArr = Array("1/1/2014", "01/1/2014", "1/01/2014", "01/01/2014")
+  for each dt in dtStrgArr
+    AssertEqual isValidDate(dt), 1, "testIsValidDatePositives"
+    'wscript.echo dt & ": " & isValidDate(dt)
+  next
+End Sub
+
+Sub testIsValidDatePositives()
+  Dim dtStrgArr
+  Dim dt
+  dtStrgArr = Array("1/1/2014", "01/1/2014", "1/01/2014", "01/01/2014")
+  for each dt in dtStrgArr
+    AssertEqual isValidDate(dt), True, "testIsValidDatePositives"
+    'wscript.echo dt & ": " & isValidDate(dt)
+  next
+End Sub
+
+Sub testIsValidDateNegatives()
+  Dim dtStrgArr
+  Dim dt
+  dtStrgArr = Array("111/1/2014", "01/111/2014", "1/01/201", "/01/2014", _
+  "1/1/2014 05:14:33pm")
+  for each dt in dtStrgArr
+    AssertEqual isValidDate(dt), False, "testIsValidDatePositives"
+  next
+End Sub
+
+Sub testIsValidTime()
+  'IsValidTime(tm, hoursFmt)
+End Sub
+
 'Execute tests ################################################################
 
 testProcs = Array("testAddLeadingZeroPositive()", _
@@ -163,6 +197,8 @@ testProcs = Array("testAddLeadingZeroPositive()", _
                   "testGet7WDFuture()", _
                   "testWriteCSV()", _
                   "testRemoveDaySuffix()", _
-                  "testConvMonthNameDateToFmtStrg()" _
+                  "testConvMonthNameDateToFmtStrg()", _
+                  "testIsValidDatePositives()", _
+                  "testIsValidDateNegatives()" _
                   )
 runReportTests(testProcs)

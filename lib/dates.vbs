@@ -64,6 +64,8 @@ Function get7WDFuture(specDate)
 End Function
 
 Function removeDaySuffix(dayWSuffix)
+  Dim suffixes 'Array
+  Dim sfx  'Strings
   'Strip the suffix from dayWSuffix
   suffixes = Array("st", "th", "nd", "rd")
   for each sfx in suffixes
@@ -85,43 +87,78 @@ End Function
 
 'Takes a 2-d array of dates information and writes it to a CSV file.
 Function writeCSV(dtsArr)
+  Dim objFSO 'Object
+  Dim objFile 'Object
+  Dim outFile 'String
+  Dim csvArr 'Array
+  Dim i 'Int
   Set objFSO = CreateObject("Scripting.FileSystemObject")
   outFile = ".\output_" & getDtForFName(Now) & ".csv"
   Set objFile = objFSO.CreateTextFile(outFile, True)
   'Write the Header row
   objFile.WriteLine("Current date,7 WD Future") 
-  
   for i = 0 to UBound(dtsArr)
     csvArr = Array(dtsArr(i, 0), _
                    dtsArr(i, 1))
     objFile.WriteLine(Join(csvArr, ","))
   next
-  
   objFile.Close
   'wscript.echo "File " & outFile & " written."
   writeCSV = outFile
 End Function
 
+Function isValidDate(dt)
+  Dim re 'Object
+  Dim match 'Object
+  Dim numMatches 'Array-like object
+  Dim cntr, isValid 'Int
+  Set re = New RegExp
+  re.Global = True
+  'Must match the date pattern d/m/yyyy or dd/mm/yyyy
+  re.Pattern = "^\d{1,2}/\d{1,2}/\d{4}$"
+  set numMatches = re.Execute(dt)  
+  cntr = 0
+  For Each match In numMatches
+    cntr = cntr + 1
+  Next
+  If cntr = 1 Then
+    isValid = True
+  Else
+    isValid = False
+  End If
+  isValidDate = isValid 
+End Function
+
+Function isValidTime(tm, hoursFmt)
+  Dim re 'Object
+  Dim match 'Object
+  Dim numMatches 'Array-like object
+  Dim cntr, isValid, hr, mn 'Int
+  if hoursFmt = "12"
+    maxHours = 12
+  else
+    maxHours = 24
+  end if
+  isValid = True
+  re.Pattern = "^\d{1,2}\:\d{1,2}$"
+  set numMatches = re.Execute(tmStrg)  
+  cntr = 0
+  For Each match In numMatches
+    cntr = cntr + 1
+  Next
+  hr = CInt(splitted(0))
+  mn = CInt(splitted(1))
+  if hr < 0 or hr > maxHours Then
+    'Hour is too low or too high
+    isValid = False
+  end if 
+  if mn < 0 or mn > 59 Then
+    'Minutes is too low or too high
+    isValid = False
+  End If
+End Function
+
+
 'monthsArr = Array("January", "February", "March", "April", "May", "June", _
 '"July", "August", "September", "October", "November", "December")
 
-'Example
-'Set re = New RegExp
-'re.Global = True
-''D.O.B must match the date pattern d/m/yyyy or dd/mm/yyyy
-'re.Pattern = "^\d{1,2}/\d{1,2}/\d{4}$"
-'dobStrg = Replace(GetDataFromMatrix("2", 1, 1), " ", "")
-'set numMatches = re.Execute(dobStrg)  
-'cntr = 0
-'For Each match In numMatches
-'  cntr = cntr + 1
-'Next
-'if cntr <> 1 Then
-'  popmsgbox "'" & dobStrg & "' does not fit the pattern dd/mm/yyyy"
-'  exit sub
-'end if
-
-'If not IsDate(dobStrg) Then
-'  popmsgbox "'" & dobStrg & "' is not a valid date"
-'  exit sub
-'End If
