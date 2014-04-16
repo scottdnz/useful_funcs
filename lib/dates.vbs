@@ -126,6 +126,14 @@ Function isValidDate(dt)
   Else
     isValid = False
   End If
+  If isValid Then
+    splitted = Split(dt, "/")   'dd/mm/yyyy
+    days =  CInt(splitted(0))
+    months = CInt(splitted(1))
+    If days > 31 or months > 12 Then
+      isValid = False
+    End If
+  End If
   isValidDate = isValid 
 End Function
 
@@ -134,7 +142,7 @@ Function isValidTime(tm, hoursFmt)
   Dim match 'Object
   Dim numMatches 'Array-like object
   Dim cntr, isValid, hr, mn 'Int
-  if hoursFmt = "12"
+  if hoursFmt = "12" Then
     maxHours = 12
   else
     maxHours = 24
@@ -156,6 +164,59 @@ Function isValidTime(tm, hoursFmt)
     'Minutes is too low or too high
     isValid = False
   End If
+End Function
+
+'Returns a message about the difference between two dates
+Function getDiffDates(dt1, dt2)
+  Dim yearsDiff, monthsDiff, daysDiff, daysLeft, numDaysInMonth
+  Dim tmpDt1, dt2ObjLeft, firstOfNextMonth
+  Dim diffMsg
+   
+  monthsDiff = 0
+  If isValidDate(dt1) and isValidDate(dt2) Then   
+    if CDate(dt1) < CDate(dt2) then
+      tmpDt1 = dt1
+      dt1 = dt2
+      dt2 = tmpDt1
+    end if
+    
+    daysDiff = Abs(DateDiff("d", dt1, dt2)) 
+    yearsDiff = Int(daysDiff / 365.25)
+    daysInYears = yearsDiff * 365
+    daysLeft = daysDiff - daysInYears
+    if daysLeft > 31 Then
+      dt2ObjLeft = CDate(dt2)
+      dt1ObjLeft = CDate(dt1)
+      'wscript.echo "Original dt2ObjLeft: " & dt2ObjLeft   
+      
+      dt2ObjLeft = DateAdd("d", daysInYears, dt2ObjLeft)
+      firstOfNextMonth = DateSerial(Year(dt2ObjLeft), Month(dt2ObjLeft) + 1, 1)
+      numDaysInMonth = Day(DateAdd("d", -1, firstOfNextMonth))
+      'Testing
+      'wscript.echo "dt2ObjLeft: " & dt2ObjLeft
+      remainingDaysInMonth = numDaysInMonth - Day(dt2ObjLeft)
+      daysLeft = daysLeft - remainingDaysInMonth
+      
+      Do While dt2ObjLeft <= dt1ObjLeft
+        'Testing
+        'wscript.echo "dt2ObjLeft: " & dt2ObjLeft & ", daysLeft: " & daysLeft
+        firstOfNextMonth = DateSerial(Year(dt2ObjLeft), Month(dt2ObjLeft) + 1, 1)
+        numDaysInMonth = Day(DateAdd("d", -1, firstOfNextMonth))
+               
+        If (Month(dt2ObjLeft) = Month(dt1ObjLeft) - 1) and (Year(dt2ObjLeft) = Year(dt1ObjLeft)) Then
+          exit do
+        Else
+          dt2ObjLeft = DateAdd("m", 1, dt2ObjLeft)  
+          daysLeft = daysLeft - numDaysInMonth
+          monthsDiff = monthsDiff + 1
+        End If
+      Loop
+    end if
+    diffMsg = yearsDiff & " year(s), " & monthsDiff & " month(s) & " & daysLeft & " day(s)"  
+  Else
+    diffMsg = "Could not be calculated"
+  End If
+  getDiffDates = diffMsg
 End Function
 
 

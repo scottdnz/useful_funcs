@@ -181,9 +181,59 @@ Sub testIsValidDateNegatives()
   next
 End Sub
 
-Sub testIsValidTime()
-  'IsValidTime(tm, hoursFmt)
+'Sub testIsValidTime()
+'  'IsValidTime(tm, hoursFmt)
+'End Sub
+
+Sub testGetDiffDates()
+  Dim datesArr(7,2)
+  Dim diffMsg
+  Dim d1, d2
+  datesArr(0,0) = "17/03/2014"
+  datesArr(0,1) = "18/08/2008"
+  datesArr(0,2) = "5 year(s), 6 month(s) & 14 day(s)"
+  
+  datesArr(1,0) = "17/03/2014"
+  datesArr(1,1) = ""
+  datesArr(1,2) = "Could not be calculated"
+  
+  datesArr(2,0) = ""
+  datesArr(2,1) = "18/08/2008"
+  datesArr(2,2) = "Could not be calculated"
+  
+  datesArr(3,0) = ""
+  datesArr(3,1) = ""
+  datesArr(3,2) = "Could not be calculated"
+  
+  datesArr(4,0) = "17/03/2014"
+  datesArr(4,1) = "11/03/2013"
+  datesArr(4,2) = "1 year(s), 0 month(s) & 6 day(s)"
+  
+  datesArr(5,0) = "17/03/2014"
+  datesArr(5,1) = "17/03/2014"
+  datesArr(5,2) = "0 year(s), 0 month(s) & 0 day(s)"
+  
+  datesArr(6,0) = "11/03/2014"
+  datesArr(6,1) = "01/12/1976"
+  datesArr(6,2) = "37 year(s), 3 month(s) & 9 day(s)"
+  
+  datesArr(7,0) = "17/03/2008"
+  datesArr(7,1) = "11/03/2014"
+  datesArr(7,2) = "5 year(s), 11 month(s) & 8 day(s)"
+  
+  for i = 0 to 7
+    d1 = datesArr(i, 0)
+    d2 = datesArr(i, 1)
+    expectedDiffMsg = datesArr(i, 2)
+    diffMsg = getDiffDates(d1, d2)
+    wscript.echo "d1: " & datesArr(i, 0) & ", dt2: " & datesArr(i, 1)
+    wscript.echo "diffMsg: " & diffMsg
+    wscript.echo "***"
+    AssertEqual diffMsg, expectedDiffMsg, "testGetDiffDates"
+  next
 End Sub
+
+
 
 'Execute tests ################################################################
 
@@ -199,6 +249,7 @@ testProcs = Array("testAddLeadingZeroPositive()", _
                   "testRemoveDaySuffix()", _
                   "testConvMonthNameDateToFmtStrg()", _
                   "testIsValidDatePositives()", _
-                  "testIsValidDateNegatives()" _
+                  "testIsValidDateNegatives()", _
+                  "testGetDiffDates()" _
                   )
 runReportTests(testProcs)
