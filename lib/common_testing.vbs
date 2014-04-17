@@ -40,3 +40,23 @@ Function inArray(val, arr)
   next
   inArray = found
 End Function
+
+'Reads a CSV file and stores it in an array. The actual type returned is a 
+'variant type
+Function readCSVIntoArray(fPath, csvFile)
+  Dim inCsvSys, inCsv 'Object(s)
+  Dim rows() ' rowItems() 'Array(s)
+  Dim rowCount 'Int(s)
+  rowCount = -1
+  'Read CSV file into array
+  Set inCsvSys = CreateObject("Scripting.FileSystemObject") 
+  Set inCsv = inCsvSys.OpenTextFile(fPath & csvFile, "1", True)
+  inCsv.ReadLine 'Skip header row
+  Do While Not inCsv.AtEndOfStream
+    rowCount = rowCount + 1
+    Redim Preserve rows(rowCount)
+    rows(rowCount) = inCsv.ReadLine
+  Loop
+  inCsv.Close
+  readCSVIntoArray = rows
+End Function
